@@ -75,13 +75,13 @@ jobs:
               echo
               echo "### ${commit_date} — ${commit_subject}"
               echo
-              echo "- **Commit:** [`$commit_short`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit})"
+              echo "- **Commit:** [${commit_short}](https://github.com/${GITHUB_REPOSITORY}/commit/${commit})"
               echo "- **Files changed:**"
               if [[ ${#changed_files[@]} -eq 0 ]]; then
                 echo "  - No file paths detected."
               else
                 for file in "${changed_files[@]}"; do
-                  echo "  - `$file`"
+                  echo "  - $file"
                 done
               fi
             } >> "$log_file"
