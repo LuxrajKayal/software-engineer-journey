@@ -1,0 +1,99 @@
+name: Update maintenance log
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - MAINTENANCE_LOG.md
+      - .github/workflows/maintenance-log.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: maintenance-log-main
+  cancel-in-progress: false
+
+jobs:
+  append-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Append pushed commit details
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+          EVENT_AFTER: ${{ github.event.after || github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin main --quiet
+          git checkout main
+          git pull --ff-only origin main
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "Manual workflow run: no repository-change entries appended."
+            exit 0
+          fi
+
+          if [[ -z "${EVENT_AFTER:-}" ]]; then
+            echo "No pushed commit SHA supplied; nothing to log."
+            exit 0
+          fi
+
+          if [[ -z "${EVENT_BEFORE:-}" || "$EVENT_BEFORE" =~ ^0+$ ]]; then
+            commit_range="$EVENT_AFTER"
+          else
+            commit_range="$EVENT_BEFORE..$EVENT_AFTER"
+          fi
+
+          mapfile -t commits < <(git log --reverse --format='%H' "$commit_range")
+          if [[ ${#commits[@]} -eq 0 ]]; then
+            echo "No commits found in event range."
+            exit 0
+          fi
+
+          log_file="MAINTENANCE_LOG.md"
+          touch "$log_file"
+
+          for commit in "${commits[@]}"; do
+            commit_date="$(git show -s --format=%cI "$commit" | cut -d'T' -f1)"
+            commit_subject="$(git show -s --format=%s "$commit")"
+            commit_short="${commit:0:7}"
+            mapfile -t changed_files < <(git diff-tree --no-commit-id --name-only -r "$commit" | sort)
+
+            {
+              echo
+              echo "### ${commit_date} — ${commit_subject}"
+              echo
+              echo "- **Commit:** [`$commit_short`](https://github.com/${REPOSITORY}/commit/${commit})"
+              echo "- **Files changed:**"
+              if [[ ${#changed_files[@]} -eq 0 ]]; then
+                echo "  - No file paths detected (possibly a merge commit)."
+              else
+                for file in "${changed_files[@]}"; do
+                  echo "  - `$file`"
+                done
+              fi
+            } >> "$log_file"
+          done
+
+          if git diff --quiet -- "$log_file"; then
+            echo "Maintenance log already contains this information."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$log_file"
+          git commit -m "docs: update maintenance log [skip ci]"
+          git push origin main
