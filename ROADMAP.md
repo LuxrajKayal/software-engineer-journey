@@ -13,7 +13,23 @@ This is the detailed syllabus for my software-engineering journey. It is designe
 5. Mark a phase complete only when its completion criteria are met.
 6. Use current official documentation when a book's tools, commands, or examples are outdated.
 
-## Phase 0 — Learning workflow and GitHub
+## Two-year timeline (24 months)
+
+The core roadmap is planned for **24 months total**. The dates below are target windows, not deadlines to rush through. Phase 0 is a short setup task during the first 1–2 weeks of Month 1, so it overlaps with Phase 1 rather than adding extra months.
+
+| Timeline | Phase | Main outcome |
+|---|---|---|
+| Month 1, first 1–2 weeks (overlaps with Phase 1) | Phase 0 — Learning workflow and GitHub | Repository and learning workflow ready |
+| Months 1–5 | Phase 1 — Python foundations | Independent beginner programs and two small projects |
+| Months 6–8 | Phase 2 — Web foundations and technical blog | Responsive, documented technical blog with a JavaScript feature |
+| Months 9–12 | Phase 3 — Data structures and algorithms | Tested implementations and stronger problem-solving skills |
+| Months 13–15 | Phase 4 — Core Computer Science and databases | SQL, database design, networking, and OS fundamentals |
+| Months 16–20 | Phase 5 — Backend development and full-stack applications | A database-backed API or web application with tests |
+| Months 21–24 | Phase 6 — Software quality, deployment, and operations | CI checks and one documented deployed project |
+
+**Study rule:** the month range is a planning estimate. If the completion criteria are not met, continue practising and revise the schedule rather than claiming the phase is complete. Build projects as you learn; you do not need to read every book cover to cover.
+
+## Phase 0 — Learning workflow and GitHub (Month 1, first 1–2 weeks; overlaps with Phase 1)
 
 **Purpose:** Set up a repeatable learning process.
 
@@ -32,7 +48,7 @@ This is the detailed syllabus for my software-engineering journey. It is designe
 ### Completion criteria
 I can explain what a commit records, find earlier changes, and update this repository without losing work.
 
-## Phase 1 — Programming foundations with Python
+## Phase 1 — Programming foundations with Python (Months 1–5)
 
 **Purpose:** Learn to solve small problems in code and develop independent debugging habits.
 
@@ -65,7 +81,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] I can explain and debug errors using tracebacks and print/debugger tools.
 - [ ] At least one project has a README with setup and usage instructions.
 
-## Phase 2 — Web foundations and the technical blog
+## Phase 2 — Web foundations and the technical blog (Months 6–8)
 
 **Purpose:** Build a website progressively and understand how the browser renders and interacts with it.
 
@@ -94,7 +110,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] At least one JavaScript feature works and is explained in the project README.
 - [ ] The site is committed to GitHub and published if suitable.
 
-## Phase 3 — Data structures and algorithms
+## Phase 3 — Data structures and algorithms (Months 9–12)
 
 **Purpose:** Learn to choose suitable ways to store data and analyze problem-solving approaches.
 
@@ -123,7 +139,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] I can solve beginner problems without following a line-by-line tutorial.
 - [ ] I can explain the reasoning, complexity, and edge cases of my solutions.
 
-## Phase 4 — Core Computer Science and databases
+## Phase 4 — Core Computer Science and databases (Months 13–15)
 
 **Purpose:** Understand what software relies on underneath the application layer.
 
@@ -151,7 +167,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] I can explain, at a basic level, what happens between entering a URL and receiving a web page.
 - [ ] I can distinguish a process from a thread and describe why resource management matters.
 
-## Phase 5 — Backend development and full-stack applications
+## Phase 5 — Backend development and full-stack applications (Months 16–20)
 
 **Purpose:** Build an application that receives requests, validates data, applies logic, and stores information.
 
@@ -181,7 +197,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] The README explains installation, configuration, and how to run the project locally.
 - [ ] Secrets are held outside source control.
 
-## Phase 6 — Software quality, deployment, and operations
+## Phase 6 — Software quality, deployment, and operations (Months 21–24)
 
 **Purpose:** Make projects repeatable to test, deploy, observe, and maintain.
 
@@ -213,7 +229,7 @@ I can explain what a commit records, find earlier changes, and update this repos
 - [ ] The deployed application has documented configuration and known limitations.
 - [ ] I can explain the build, test, deployment, and basic troubleshooting process.
 
-## Optional specialization tracks — only after core foundations
+## Optional specialization tracks — after Month 24, or earlier only if core foundations are strong
 
 ### Java backend development
 Choose this track if Java becomes a deliberate career goal. Learn core Java and object-oriented programming first, then collections, exceptions, testing, SQL, and a backend framework. After that:
@@ -234,19 +250,19 @@ Begin only after Python fundamentals and basic statistics are comfortable:
 
 | Resource | Use it for | Timing |
 |---|---|---|
-| *Python Crash Course* | Main hands-on Python learning | Phase 1 |
+| *Python Crash Course* | Main hands-on Python learning | Phase 1 (Months 1–5) |
 | *Learning Python* | Deeper explanations/reference | Phase 1 onward |
-| *Beginning Programming All-in-One Desk Reference For Dummies* (2008) | Broad concepts, selected data structures/algorithms | Phases 1 and 3 |
-| *Coding All-in-One For Dummies* (2017) | Web development and overview of data analysis/ML | Phase 2; optional ML track later |
+| *Beginning Programming All-in-One Desk Reference For Dummies* (2008) | Broad concepts, selected data structures/algorithms | Phases 1 (Months 1–5) and 3 (Months 9–12) |
+| *Coding All-in-One For Dummies* (2017) | Web development and overview of data analysis/ML | Phase 2 (Months 6–8); optional ML track later |
 | *Effective Python* | Idiomatic code and better practices | After Python basics |
 | *Python Cookbook* (3rd edition, 2013) | Problem-solving reference | As needed after basics |
 | *Fluent Python* (2015 edition in the repository) | Advanced Python language features | Later reference |
-| *Grokking Algorithms* | Accessible DSA introduction | Phase 3 |
-| CLRS | Detailed algorithms reference | Phase 3, selectively |
-| OS and networking textbooks | CS foundations | Phase 4 |
-| *Advanced Java* and *Apache Maven Cookbook* | Optional Java track | After core Java |
-| *Designing Data-Intensive Applications* | Data systems and architecture | Phase 5 onward |
-| *Clean Code*, *The Phoenix Project*, *System Design Interview*, *Kubernetes Up & Running* | Quality, DevOps, design, and deployment perspectives | Phase 6 or later |
+| *Grokking Algorithms* | Accessible DSA introduction | Phase 3 (Months 9–12) |
+| CLRS | Detailed algorithms reference | Phase 3 (Months 9–12), selectively |
+| OS and networking textbooks | CS foundations | Phase 4 (Months 13–15) |
+| *Advanced Java* and *Apache Maven Cookbook* | Optional Java track | After Month 24, if Java is a chosen specialization |
+| *Designing Data-Intensive Applications* | Data systems and architecture | Phase 5 (Months 16–20) onward |
+| *Clean Code*, *The Phoenix Project*, *System Design Interview*, *Kubernetes Up & Running* | Quality, DevOps, design, and deployment perspectives | Phase 6 (Months 21–24) or later |
 
 ## Progress rule
 
