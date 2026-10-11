@@ -259,3 +259,23 @@ html[data-theme="dark"] .button-primary:hover { background: var(--green); filter
   .social-settings-grid { grid-template-columns: 1fr; }
   .header-actions { gap: 5px; }
 }
+
+/* Reserved navigation strip below the top bar. Menu items will be added later. */
+.hero-navigation {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 max(24px, calc((100% - 1240px) / 2));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+html[data-theme="dark"] .hero-navigation {
+  background: var(--surface);
+  border-bottom-color: var(--line);
+}
+@media (max-width: 720px) {
+  .hero-navigation { min-height: 42px; padding: 0 18px; }
+}
+@media (max-width: 440px) {
+  .hero-navigation { padding: 0 12px; }
+}
