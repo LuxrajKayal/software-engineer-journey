@@ -11,6 +11,18 @@
   );
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const defaultSiteSettings = {
+    theme: "light",
+    accentColor: "green",
+    socials: { github: "", linkedin: "", instagram: "", youtube: "", x: "" }
+  };
+  const socialPlatforms = [
+    { key: "github", label: "GitHub", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.07c-3.1.67-3.75-1.32-3.75-1.32-.5-1.29-1.24-1.64-1.24-1.64-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.1 2.48 2.08 2.48.74 0 1.25-.19 1.59-.53-.06-.68-.3-1.29-.59-1.64-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.98-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.06 1.14a10.6 10.6 0 0 1 5.57 0c2.12-1.44 3.06-1.14 3.06-1.14.61 1.54.23 2.68.11 2.96.72.77 1.15 1.76 1.15 2.98 0 4.29-2.62 5.24-5.12 5.51.4.35.75 1.03.75 2.07V22c0 .29.2.64.77.53A11.1 11.1 0 0 0 12 .9z"/></svg>' },
+    { key: "linkedin", label: "LinkedIn", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.2 8.3h3.2v10.4H5.2zM6.8 3.5a1.86 1.86 0 1 1-.02 3.72 1.86 1.86 0 0 1 .02-3.72M10 8.3h3.1v1.42h.04c.43-.81 1.48-1.66 3.05-1.66 3.26 0 3.86 2.14 3.86 4.92v5.72h-3.22v-5.07c0-1.21-.02-2.77-1.69-2.77-1.69 0-1.95 1.32-1.95 2.68v5.16H10z"/></svg>' },
+    { key: "instagram", label: "Instagram", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.2" fill="currentColor"/></svg>' },
+    { key: "youtube", label: "YouTube", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="currentColor"/><path d="M10 8.5 16 12l-6 3.5z" fill="#080908"/></svg>' },
+    { key: "x", label: "X", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.78 7.75L23.2 22h-6.25l-4.9-7.12L5.82 22H2.7l7.25-8.29L2.3 2h6.4l4.43 6.58zM17.8 19.8h1.73L7.77 4.1H5.91z"/></svg>' }
+  ];
   const defaultSchedule = {
     Monday: "Python study or current core topic — 45 minutes",
     Tuesday: "Hands-on exercises — 45 minutes",
@@ -42,6 +54,11 @@
   let ownerAccess = false;
   let goals = demoGoals.map((goal) => Object.assign({}, goal));
   let schedule = Object.assign({}, defaultSchedule);
+  let siteSettings = {
+    theme: defaultSiteSettings.theme,
+    accentColor: defaultSiteSettings.accentColor,
+    socials: Object.assign({}, defaultSiteSettings.socials)
+  };
   let activeFilter = "all";
 
   function escapeHtml(value) {
@@ -54,6 +71,54 @@
     noticeBar.textContent = message;
     noticeBar.hidden = !message;
     noticeBar.dataset.persistent = persistent ? "true" : "false";
+  }
+
+  function normalizeSiteSettings(value) {
+    const source = value && typeof value === "object" ? value : {};
+    const allowedAccents = ["green", "blue", "purple", "orange"];
+    const sourceSocials = source.socials && typeof source.socials === "object" ? source.socials : {};
+    const socials = {};
+    socialPlatforms.forEach((platform) => {
+      socials[platform.key] = String(sourceSocials[platform.key] || "").trim();
+    });
+    return {
+      theme: source.theme === "dark" ? "dark" : "light",
+      accentColor: allowedAccents.includes(source.accentColor) ? source.accentColor : "green",
+      socials
+    };
+  }
+
+  function normalizeSocialUrl(value) {
+    const text = String(value || "").trim();
+    if (!text) return "";
+    try {
+      const url = new URL(text);
+      if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+      return url.href;
+    } catch (_error) {
+      return "";
+    }
+  }
+
+  function applySiteSettings() {
+    const settings = normalizeSiteSettings(siteSettings);
+    document.documentElement.dataset.theme = settings.theme;
+    document.documentElement.dataset.accent = settings.accentColor;
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = settings.theme === "dark" ? "#101310" : "#f5f4ef";
+  }
+
+  function renderSocialLinks() {
+    const nav = el("socialLinks");
+    if (!nav) return;
+    const links = socialPlatforms.map((platform) => {
+      const href = normalizeSocialUrl(siteSettings.socials[platform.key]);
+      if (!href) return "";
+      return "<a class='social-link' href='" + escapeHtml(href) + "' target='_blank' rel='noopener noreferrer' aria-label='" +
+        escapeHtml(platform.label) + "' title='" + escapeHtml(platform.label) + "'>" + platform.icon + "</a>";
+    }).join("");
+    nav.innerHTML = links;
+    nav.hidden = !links;
   }
 
   // A private-to-owner row determines editor access; the database also protects every write.
@@ -83,6 +148,7 @@
     const owner = isOwner();
     el("addGoalButton").hidden = !owner;
     el("editScheduleButton").hidden = !owner;
+    el("settingsButton").hidden = !owner;
     el("authButton").textContent = owner || user ? "Sign out" : (configured ? "Owner sign in" : "Setup needed");
     el("modePill").textContent = owner ? "Owner editing enabled" : "Public · read only";
   }
@@ -158,6 +224,8 @@
   }
 
   function renderAll() {
+    applySiteSettings();
+    renderSocialLinks();
     renderAuth();
     renderSchedule();
     renderGoals();
@@ -199,6 +267,10 @@
       const scheduleResult = await client.from("journey_settings").select("value").eq("id", "weekly_schedule").maybeSingle();
       if (scheduleResult.error) throw scheduleResult.error;
       schedule = Object.assign({}, defaultSchedule, scheduleResult.data && scheduleResult.data.value ? scheduleResult.data.value : {});
+
+      const settingsResult = await client.from("journey_settings").select("value").eq("id", "site_preferences").maybeSingle();
+      if (settingsResult.error) throw settingsResult.error;
+      siteSettings = normalizeSiteSettings(settingsResult.data && settingsResult.data.value ? settingsResult.data.value : defaultSiteSettings);
 
       await refreshOwnerAccess();
       renderAll();
@@ -287,6 +359,61 @@
 
   el("addGoalButton").addEventListener("click", () => {
     if (isOwner()) openGoalDialog(null);
+  });
+
+  el("settingsButton").addEventListener("click", () => {
+    if (!isOwner()) return;
+    el("siteTheme").value = siteSettings.theme;
+    el("accentColor").value = siteSettings.accentColor;
+    el("socialGitHub").value = siteSettings.socials.github || "";
+    el("socialLinkedIn").value = siteSettings.socials.linkedin || "";
+    el("socialInstagram").value = siteSettings.socials.instagram || "";
+    el("socialYouTube").value = siteSettings.socials.youtube || "";
+    el("socialX").value = siteSettings.socials.x || "";
+    el("settingsMessage").textContent = "";
+    el("settingsDialog").showModal();
+  });
+
+  el("settingsForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!isOwner() || !client) return;
+
+    const nextSettings = normalizeSiteSettings({
+      theme: el("siteTheme").value,
+      accentColor: el("accentColor").value,
+      socials: {
+        github: el("socialGitHub").value.trim(),
+        linkedin: el("socialLinkedIn").value.trim(),
+        instagram: el("socialInstagram").value.trim(),
+        youtube: el("socialYouTube").value.trim(),
+        x: el("socialX").value.trim()
+      }
+    });
+
+    for (const platform of socialPlatforms) {
+      const raw = nextSettings.socials[platform.key];
+      if (raw && !normalizeSocialUrl(raw)) {
+        el("settingsMessage").textContent = "Enter a valid http:// or https:// URL for " + platform.label + ".";
+        return;
+      }
+    }
+
+    el("settingsMessage").textContent = "Saving settings…";
+    const result = await client.from("journey_settings").upsert({
+      id: "site_preferences",
+      value: nextSettings,
+      updated_at: new Date().toISOString()
+    });
+    if (result.error) {
+      el("settingsMessage").textContent = "Could not save settings: " + result.error.message;
+      return;
+    }
+
+    siteSettings = nextSettings;
+    applySiteSettings();
+    renderSocialLinks();
+    el("settingsDialog").close();
+    showNotice("Website appearance and social links saved for all visitors.", false);
   });
 
   el("goalForm").addEventListener("submit", async (event) => {
