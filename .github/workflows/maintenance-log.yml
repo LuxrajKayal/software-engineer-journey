@@ -12,6 +12,8 @@ on:
 permissions:
   contents: write
 
+# If several pushes arrive close together, the next run scans every unlogged commit
+# after the baseline, so a replaced pending run does not lose change records.
 concurrency:
   group: maintenance-log-main
   cancel-in-progress: false
@@ -20,75 +22,75 @@ jobs:
   append-log:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out latest main
+      - name: Check out main
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - name: Append pushed commit details
+      - name: Append unlogged repository changes
         env:
-          EVENT_BEFORE: ${{ github.event.before }}
-          EVENT_AFTER: ${{ github.event.after || github.sha }}
-          EVENT_NAME: ${{ github.event_name }}
-          REPOSITORY: ${{ github.repository }}
+          BASELINE_SHA: a72999a68ca320dcda3db86afa57dd91567933fd
         shell: bash
         run: |
           set -euo pipefail
 
           git fetch origin main --quiet
-          git checkout main
-          git pull --ff-only origin main
-
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            echo "Manual workflow run: no repository-change entries appended."
-            exit 0
-          fi
-
-          if [[ -z "${EVENT_AFTER:-}" ]]; then
-            echo "No pushed commit SHA supplied; nothing to log."
-            exit 0
-          fi
-
-          if [[ -z "${EVENT_BEFORE:-}" || "$EVENT_BEFORE" =~ ^0+$ ]]; then
-            commit_range="$EVENT_AFTER"
-          else
-            commit_range="$EVENT_BEFORE..$EVENT_AFTER"
-          fi
-
-          mapfile -t commits < <(git log --reverse --format='%H' "$commit_range")
-          if [[ ${#commits[@]} -eq 0 ]]; then
-            echo "No commits found in event range."
-            exit 0
-          fi
+          git checkout -B main origin/main
 
           log_file="MAINTENANCE_LOG.md"
-          touch "$log_file"
+          if [[ ! -f "$log_file" ]]; then
+            echo "# Maintenance Log" > "$log_file"
+            echo >> "$log_file"
+          fi
+
+          mapfile -t commits < <(git log --reverse --format='%H' "${BASELINE_SHA}..origin/main")
+          added_entries=0
 
           for commit in "${commits[@]}"; do
+            # A full SHA in the log means this commit has already been recorded.
+            if grep -Fq "$commit" "$log_file"; then
+              continue
+            fi
+
+            mapfile -t changed_files < <(git diff-tree --no-commit-id --name-only -r "$commit" | sort -u)
+
+            # Ignore commits that only update this log or this workflow.
+            relevant=false
+            for file in "${changed_files[@]}"; do
+              if [[ "$file" != "MAINTENANCE_LOG.md" && "$file" != ".github/workflows/maintenance-log.yml" ]]; then
+                relevant=true
+                break
+              fi
+            done
+            if [[ "$relevant" != true ]]; then
+              continue
+            fi
+
             commit_date="$(git show -s --format=%cI "$commit" | cut -d'T' -f1)"
             commit_subject="$(git show -s --format=%s "$commit")"
             commit_short="${commit:0:7}"
-            mapfile -t changed_files < <(git diff-tree --no-commit-id --name-only -r "$commit" | sort)
 
             {
               echo
               echo "### ${commit_date} — ${commit_subject}"
               echo
-              echo "- **Commit:** [`$commit_short`](https://github.com/${REPOSITORY}/commit/${commit})"
+              echo "- **Commit:** [`$commit_short`](https://github.com/${GITHUB_REPOSITORY}/commit/${commit})"
               echo "- **Files changed:**"
               if [[ ${#changed_files[@]} -eq 0 ]]; then
-                echo "  - No file paths detected (possibly a merge commit)."
+                echo "  - No file paths detected."
               else
                 for file in "${changed_files[@]}"; do
                   echo "  - `$file`"
                 done
               fi
             } >> "$log_file"
+
+            added_entries=$((added_entries + 1))
           done
 
-          if git diff --quiet -- "$log_file"; then
-            echo "Maintenance log already contains this information."
+          if [[ "$added_entries" -eq 0 ]] || git diff --quiet -- "$log_file"; then
+            echo "No new repository changes need to be logged."
             exit 0
           fi
 
@@ -96,4 +98,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$log_file"
           git commit -m "docs: update maintenance log [skip ci]"
-          git push origin main
+
+          # Retry if main changes while the log is being written.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+          done
+
+          echo "Could not push the maintenance log after three attempts." >&2
+          exit 1
