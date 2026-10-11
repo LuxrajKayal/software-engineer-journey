@@ -74,3 +74,9 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 - **Commit:** [9814a3c](https://github.com/LuxrajKayal/software-engineer-journey/commit/9814a3c347d7052aa8a76ff19cc5f660878d3160)
 - **Files changed:**
   - docs/SETUP.md
+
+### 2026-10-11 — style: format roadmap tile editor responsively
+
+- **Commit:** [8c10806](https://github.com/LuxrajKayal/software-engineer-journey/commit/8c10806e2ba70e9482681f300d84c4c9ceb5bdfc)
+- **Files changed:**
+  - docs/styles.css
