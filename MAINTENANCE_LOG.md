@@ -14,3 +14,21 @@ This log tracks repository changes pushed to the `main` branch. The GitHub Actio
 ## Automated change history
 
 Future entries are appended by `.github/workflows/maintenance-log.yml` after pushes to `main`.
+
+### 2026-10-11 — feat: add owner settings dashboard and social links
+
+- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/c5660ee3e0714f1832a81ccd1b0dbe392c27050b)
+- **Files changed:**
+  - 
+
+### 2026-10-11 — style: add black header and theme styles
+
+- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/8d2729493c644d8ddc1979881dfbc0883422120e)
+- **Files changed:**
+  - 
+
+### 2026-10-11 — feat: save appearance and social profile settings
+
+- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/4dedae2a81f2c777700ddac28dbfdcf2c33f0961)
+- **Files changed:**
+  - 
