@@ -56,3 +56,21 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 - **Commit:** [777c8f7](https://github.com/LuxrajKayal/software-engineer-journey/commit/777c8f7f1db6bc590629f76e532e09ec2f264965)
 - **Files changed:**
   - docs/styles.css
+
+### 2026-10-11 — feat: add owner editor to roadmap tiles
+
+- **Commit:** [7a0dd2c](https://github.com/LuxrajKayal/software-engineer-journey/commit/7a0dd2c9bfe6cef093c5cd358d038bf8d555f0d0)
+- **Files changed:**
+  - docs/index.html
+
+### 2026-10-11 — feat: persist editable roadmap tile content
+
+- **Commit:** [1cb2235](https://github.com/LuxrajKayal/software-engineer-journey/commit/1cb2235bbea64e7667d62b91d2d1e6a909f33924)
+- **Files changed:**
+  - docs/app.js
+
+### 2026-10-11 — docs: describe roadmap tile editing
+
+- **Commit:** [9814a3c](https://github.com/LuxrajKayal/software-engineer-journey/commit/9814a3c347d7052aa8a76ff19cc5f660878d3160)
+- **Files changed:**
+  - docs/SETUP.md
