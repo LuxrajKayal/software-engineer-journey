@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="A transparent, public dashboard tracking a two-year software engineering learning journey, goals, projects, and study schedule.">
+  <title>Software Engineer Journey — Learning Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Software Engineer Journey home">
+      <span class="brand-mark" aria-hidden="true">SJ</span>
+      <span><strong>Software Engineer Journey</strong><small>Learn · Build · Document</small></span>
+    </a>
+    <div class="header-actions">
+      <span class="mode-pill" id="modePill">Public dashboard</span>
+      <button class="button button-outline button-small" id="authButton" type="button">Owner sign in</button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">A TWO-YEAR LEARNING PROJECT</p>
+        <h1>From learning the basics to <span>building real software.</span></h1>
+        <p class="hero-intro">A public record of the goals, projects, timeframes, and study habits behind my journey toward becoming a software engineer.</p>
+        <div class="hero-meta">
+          <span><span class="dot"></span> 24-month roadmap</span>
+          <span>Public progress · Owner-managed goals</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-top"><span>OVERALL COMPLETION</span><span id="completionPercent">0%</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Overall goal completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar"><span id="progressFill"></span></div>
+        <div class="hero-stats">
+          <div><strong id="completedCount">0</strong><span>Completed</span></div>
+          <div><strong id="goalsCount">0</strong><span>Total goals</span></div>
+          <div><strong>24</strong><span>Months planned</span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="transparency-note">
+      <span class="note-mark" aria-hidden="true">i</span>
+      <p><strong>Transparency note: Before starting this journey, I used ChatGPT to generate this website. I wrote this statement myself to be transparent about that assistance.</strong></p>
+    </aside>
+
+    <div class="notice-bar" id="noticeBar" role="status" hidden></div>
+
+    <section class="workspace">
+      <div class="goals-column">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE ROADMAP IN ACTION</p>
+            <h2>Learning goals</h2>
+            <p class="section-subtitle">Small, checkable outcomes. Update the plan as real progress happens.</p>
+          </div>
+          <button class="button button-primary" id="addGoalButton" type="button" hidden>+ Add goal</button>
+        </div>
+        <div class="goal-toolbar">
+          <div class="filter-group" role="group" aria-label="Filter goals">
+            <button class="filter-button active" type="button" data-filter="all">All goals</button>
+            <button class="filter-button" type="button" data-filter="active">In progress</button>
+            <button class="filter-button" type="button" data-filter="completed">Completed</button>
+          </div>
+          <span class="small-muted" id="visibleGoalCount">Showing 0 goals</span>
+        </div>
+        <div id="goalList" class="goal-list" aria-live="polite"></div>
+        <div id="emptyState" class="empty-state" hidden>
+          <strong>No goals in this view</strong>
+          <p>Choose another filter or add a goal when you are signed in as the owner.</p>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <section class="panel schedule-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">WEEKLY ROUTINE</p><h2>Study schedule</h2></div>
+            <button class="icon-button" id="editScheduleButton" type="button" aria-label="Edit weekly study schedule" title="Edit schedule" hidden>✎</button>
+          </div>
+          <p class="panel-description">A flexible template to keep learning consistent without making the plan too rigid.</p>
+          <div class="schedule-list" id="scheduleList"></div>
+          <p class="schedule-footnote">Adjust this schedule around work, study, family, and rest. Consistency matters more than a perfect week.</p>
+        </section>
+
+        <section class="panel roadmap-panel">
+          <p class="eyebrow">24-MONTH PLAN</p>
+          <h2>Roadmap phases</h2>
+          <ol class="phase-list">
+            <li><span>01</span><div><strong>Python foundations</strong><small>Months 1–5</small></div></li>
+            <li><span>02</span><div><strong>Web development</strong><small>Months 6–8</small></div></li>
+            <li><span>03</span><div><strong>Data structures & algorithms</strong><small>Months 9–12</small></div></li>
+            <li><span>04</span><div><strong>CS fundamentals & databases</strong><small>Months 13–15</small></div></li>
+            <li><span>05</span><div><strong>Backend development</strong><small>Months 16–20</small></div></li>
+            <li><span>06</span><div><strong>Testing & deployment</strong><small>Months 21–24</small></div></li>
+          </ol>
+          <a class="text-link" href="https://github.com/LuxrajKayal/software-engineer-journey/blob/main/ROADMAP.md" target="_blank" rel="noreferrer">Read the detailed roadmap ↗</a>
+        </section>
+
+        <section class="panel owner-panel">
+          <span class="owner-icon" aria-hidden="true">✦</span>
+          <h2>Public view. Private editing.</h2>
+          <p>Anyone can view this dashboard. Goal edits and schedule changes require the owner's signed-in account.</p>
+          <a class="text-link" href="https://github.com/LuxrajKayal/software-engineer-journey" target="_blank" rel="noreferrer">Explore the project source ↗</a>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Built to document learning, not to pretend the journey is already complete.</span>
+    <a href="https://github.com/LuxrajKayal/software-engineer-journey" target="_blank" rel="noreferrer">Source on GitHub ↗</a>
+  </footer>
+
+  <dialog id="loginDialog" class="dialog">
+    <form id="loginForm" class="dialog-form">
+      <div class="dialog-heading"><div><p class="eyebrow">OWNER ACCESS</p><h2>Sign in to edit</h2></div><button class="icon-button" type="button" data-close="loginDialog" aria-label="Close">×</button></div>
+      <p class="dialog-copy">Enter the owner email configured for this site. A secure sign-in link will be sent to that inbox.</p>
+      <label for="ownerEmailInput">Email address</label>
+      <input id="ownerEmailInput" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <button class="button button-primary button-wide" type="submit">Send sign-in link</button>
+      <p class="form-message" id="loginMessage" role="status"></p>
+    </form>
+  </dialog>
+
+  <dialog id="goalDialog" class="dialog dialog-large">
+    <form id="goalForm" class="dialog-form">
+      <div class="dialog-heading"><div><p class="eyebrow">GOAL EDITOR</p><h2 id="goalDialogTitle">Add a goal</h2></div><button class="icon-button" type="button" data-close="goalDialog" aria-label="Close">×</button></div>
+      <input type="hidden" id="goalId" name="id">
+      <label for="goalTitle">Goal title</label>
+      <input id="goalTitle" name="title" maxlength="120" required>
+      <label for="goalPhase">Roadmap phase</label>
+      <input id="goalPhase" name="phase" maxlength="100" placeholder="Phase 1 — Python" required>
+      <label for="goalDescription">What does success look like?</label>
+      <textarea id="goalDescription" name="description" rows="3" maxlength="800" required></textarea>
+      <div class="form-two-col">
+        <div><label for="goalTimeframe">Timeframe</label><input id="goalTimeframe" name="timeframe" placeholder="Months 1–3" maxlength="80" required></div>
+        <div><label for="goalStudySchedule">Study schedule</label><input id="goalStudySchedule" name="study_schedule" placeholder="3 sessions per week" maxlength="160" required></div>
+      </div>
+      <label class="check-label"><input id="goalCompleted" type="checkbox" name="completed"><span>Mark this goal as complete</span></label>
+      <div class="dialog-actions"><button class="button button-danger" id="deleteGoalButton" type="button" hidden>Delete goal</button><span class="dialog-spacer"></span><button class="button button-outline" type="button" data-close="goalDialog">Cancel</button><button class="button button-primary" type="submit">Save goal</button></div>
+      <p class="form-message" id="goalMessage" role="status"></p>
+    </form>
+  </dialog>
+
+  <dialog id="scheduleDialog" class="dialog dialog-large">
+    <form id="scheduleForm" class="dialog-form">
+      <div class="dialog-heading"><div><p class="eyebrow">WEEKLY ROUTINE</p><h2>Edit study schedule</h2></div><button class="icon-button" type="button" data-close="scheduleDialog" aria-label="Close">×</button></div>
+      <p class="dialog-copy">Keep each entry realistic. You can change it as your responsibilities or priorities change.</p>
+      <div id="scheduleInputs" class="schedule-inputs"></div>
+      <div class="dialog-actions"><span class="dialog-spacer"></span><button class="button button-outline" type="button" data-close="scheduleDialog">Cancel</button><button class="button button-primary" type="submit">Save schedule</button></div>
+      <p class="form-message" id="scheduleMessage" role="status"></p>
+    </form>
+  </dialog>
+</body>
+</html>
