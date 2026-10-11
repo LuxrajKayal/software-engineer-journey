@@ -279,3 +279,39 @@ html[data-theme="dark"] .hero-navigation {
 @media (max-width: 440px) {
   .hero-navigation { padding: 0 12px; }
 }
+
+
+/* Compact, responsive editor for the existing roadmap tiles */
+.roadmap-inputs {
+  display: grid;
+  gap: 12px;
+  max-height: 56vh;
+  overflow-y: auto;
+  padding: 2px 4px 2px 0;
+}
+.roadmap-editor-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+}
+.roadmap-editor-row label {
+  display: block;
+  margin: 0 0 5px !important;
+  font-size: 10px !important;
+}
+.roadmap-editor-row input {
+  min-width: 0;
+}
+html[data-theme="dark"] .roadmap-editor-row {
+  background: #141914;
+}
+@media (max-width: 560px) {
+  .roadmap-editor-row {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+}
