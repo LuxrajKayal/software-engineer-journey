@@ -44,3 +44,15 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 - **Commit:** [d01d8d5](https://github.com/LuxrajKayal/software-engineer-journey/commit/d01d8d5e335f592a22131291caebb02a8a5107de)
 - **Files changed:**
   - docs/SETUP.md
+
+### 2026-10-11 — feat: add empty hero navigation bar
+
+- **Commit:** [fae92e1](https://github.com/LuxrajKayal/software-engineer-journey/commit/fae92e1663f5eb4ff43876604502c66e9c0da5ad)
+- **Files changed:**
+  - docs/index.html
+
+### 2026-10-11 — style: add navigation bar below top header
+
+- **Commit:** [777c8f7](https://github.com/LuxrajKayal/software-engineer-journey/commit/777c8f7f1db6bc590629f76e532e09ec2f264965)
+- **Files changed:**
+  - docs/styles.css
