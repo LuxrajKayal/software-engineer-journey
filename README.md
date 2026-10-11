@@ -9,7 +9,7 @@ A public record of my progress toward becoming a capable software engineer. This
 - **Current focus:** Python fundamentals and Git/GitHub
 - **Parallel practice:** Continue improving my technical website with HTML and CSS; add JavaScript when ready
 - **Status:** In progress
-- **Current milestone:** Establish the roadmap, measurable goals, and a progress log in this repository
+- **Current milestone:** Set up a public learning dashboard with measurable goals, a weekly schedule, and owner-only editing
 
 ## Learning dashboard
 
@@ -25,6 +25,10 @@ A public record of my progress toward becoming a capable software engineer. This
 | Optional specialization | Explore Java backend development or data analysis/ML later | Future option |
 
 Statuses are starting estimates. I will update them as I produce evidence of learning.
+
+## Public learning dashboard
+
+The website source is in [docs/](docs/SETUP.md). It is designed so anyone can view the goals and schedule, while only the configured owner account can save edits. To publish it, enable GitHub Pages with `main` and `/docs`, then configure Supabase authentication and database access using the [setup guide](docs/SETUP.md). The site's bold transparency note explains the ChatGPT assistance and says that I wrote the statement myself.
 
 ## Roadmap at a glance
 
@@ -64,10 +68,9 @@ Older books can teach durable concepts, but I will check current official docume
 
 I will mark a topic as complete only when I can explain the main idea, write or modify a working example, debug common mistakes, and identify what I still do not understand. Reading a chapter alone is not completion.
 
-## Files to add next
+## Project files
 
-- `ROADMAP.md` — detailed phases, topics, project milestones, and resource mapping
-- `GOALS.md` — measurable goals and completion criteria
-- `PROGRESS.md` — weekly log of practice, evidence, blockers, and next actions
-
-These files will be added in the next setup steps so each part of the learning system stays easy to maintain.
+- [`ROADMAP.md`](ROADMAP.md) — detailed syllabus and 24-month timeline
+- [`GOALS.md`](GOALS.md) — measurable goals and completion criteria
+- [`PROGRESS.md`](PROGRESS.md) — weekly log of practice, evidence, blockers, and next actions
+- [`docs/`](docs/SETUP.md) — website files, owner-only editing setup, and publishing guide
