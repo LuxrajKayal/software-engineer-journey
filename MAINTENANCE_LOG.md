@@ -38,3 +38,9 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 - **Commit:** [ff756b6](https://github.com/LuxrajKayal/software-engineer-journey/commit/ff756b6f1d6223e2a84665779610846ab6a1e0b4)
 - **Files changed:**
   - docs/SETUP.md
+
+### 2026-10-11 — docs: document automatic JavaScript syntax checks
+
+- **Commit:** [d01d8d5](https://github.com/LuxrajKayal/software-engineer-journey/commit/d01d8d5e335f592a22131291caebb02a8a5107de)
+- **Files changed:**
+  - docs/SETUP.md
