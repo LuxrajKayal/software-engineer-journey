@@ -11,6 +11,14 @@
   );
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const defaultRoadmapTiles = [
+    { number: "01", title: "Python foundations", timeframe: "Months 1–5" },
+    { number: "02", title: "Web development", timeframe: "Months 6–8" },
+    { number: "03", title: "Data structures & algorithms", timeframe: "Months 9–12" },
+    { number: "04", title: "CS fundamentals & databases", timeframe: "Months 13–15" },
+    { number: "05", title: "Backend development", timeframe: "Months 16–20" },
+    { number: "06", title: "Testing & deployment", timeframe: "Months 21–24" }
+  ];
   const defaultSiteSettings = {
     theme: "light",
     accentColor: "green",
@@ -59,6 +67,7 @@
     accentColor: defaultSiteSettings.accentColor,
     socials: Object.assign({}, defaultSiteSettings.socials)
   };
+  let roadmapTiles = defaultRoadmapTiles.map((tile) => Object.assign({}, tile));
   let activeFilter = "all";
 
   function escapeHtml(value) {
@@ -71,6 +80,39 @@
     noticeBar.textContent = message;
     noticeBar.hidden = !message;
     noticeBar.dataset.persistent = persistent ? "true" : "false";
+  }
+
+  function normalizeRoadmapTiles(value) {
+    if (!Array.isArray(value) || value.length !== defaultRoadmapTiles.length) {
+      return defaultRoadmapTiles.map((tile) => Object.assign({}, tile));
+    }
+    return value.map((tile, index) => ({
+      number: String(tile && tile.number != null ? tile.number : defaultRoadmapTiles[index].number).trim().slice(0, 4),
+      title: String(tile && tile.title != null ? tile.title : defaultRoadmapTiles[index].title).trim().slice(0, 100),
+      timeframe: String(tile && tile.timeframe != null ? tile.timeframe : defaultRoadmapTiles[index].timeframe).trim().slice(0, 80)
+    }));
+  }
+
+  function renderRoadmapTiles() {
+    const list = el("roadmapPhaseList");
+    if (!list) return;
+    list.innerHTML = roadmapTiles.map((tile) =>
+      "<li><span>" + escapeHtml(tile.number) + "</span><div><strong>" + escapeHtml(tile.title) +
+      "</strong><small>" + escapeHtml(tile.timeframe) + "</small></div></li>"
+    ).join("");
+  }
+
+  function openRoadmapEditor() {
+    if (!isOwner()) return;
+    el("roadmapInputs").innerHTML = roadmapTiles.map((tile, index) =>
+      "<div class='roadmap-editor-row'>" +
+      "<div><label for='roadmapNumber-" + index + "'>Number</label><input id='roadmapNumber-" + index + "' data-roadmap-field='number' data-roadmap-index='" + index + "' maxlength='4' value='" + escapeHtml(tile.number) + "' required></div>" +
+      "<div><label for='roadmapTitle-" + index + "'>Tile title</label><input id='roadmapTitle-" + index + "' data-roadmap-field='title' data-roadmap-index='" + index + "' maxlength='100' value='" + escapeHtml(tile.title) + "' required></div>" +
+      "<div><label for='roadmapTimeframe-" + index + "'>Timeframe</label><input id='roadmapTimeframe-" + index + "' data-roadmap-field='timeframe' data-roadmap-index='" + index + "' maxlength='80' value='" + escapeHtml(tile.timeframe) + "' required></div>" +
+      "</div>"
+    ).join("");
+    el("roadmapMessage").textContent = "";
+    el("roadmapDialog").showModal();
   }
 
   function normalizeSiteSettings(value) {
@@ -148,6 +190,7 @@
     const owner = isOwner();
     el("addGoalButton").hidden = !owner;
     el("editScheduleButton").hidden = !owner;
+    el("editRoadmapButton").hidden = !owner;
     el("settingsButton").hidden = !owner;
     el("authButton").textContent = owner || user ? "Sign out" : (configured ? "Owner sign in" : "Setup needed");
     el("modePill").textContent = owner ? "Owner editing enabled" : "Public · read only";
@@ -228,6 +271,7 @@
     renderSocialLinks();
     renderAuth();
     renderSchedule();
+    renderRoadmapTiles();
     renderGoals();
   }
 
@@ -271,6 +315,10 @@
       const settingsResult = await client.from("journey_settings").select("value").eq("id", "site_preferences").maybeSingle();
       if (settingsResult.error) throw settingsResult.error;
       siteSettings = normalizeSiteSettings(settingsResult.data && settingsResult.data.value ? settingsResult.data.value : defaultSiteSettings);
+
+      const roadmapResult = await client.from("journey_settings").select("value").eq("id", "roadmap_tiles").maybeSingle();
+      if (roadmapResult.error) throw roadmapResult.error;
+      roadmapTiles = normalizeRoadmapTiles(roadmapResult.data && roadmapResult.data.value ? roadmapResult.data.value : defaultRoadmapTiles);
 
       await refreshOwnerAccess();
       renderAll();
@@ -359,6 +407,40 @@
 
   el("addGoalButton").addEventListener("click", () => {
     if (isOwner()) openGoalDialog(null);
+  });
+
+  el("editRoadmapButton").addEventListener("click", openRoadmapEditor);
+
+  el("roadmapForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!isOwner() || !client) return;
+
+    const nextTiles = defaultRoadmapTiles.map((tile, index) => ({
+      number: el("roadmapNumber-" + index).value.trim(),
+      title: el("roadmapTitle-" + index).value.trim(),
+      timeframe: el("roadmapTimeframe-" + index).value.trim()
+    }));
+
+    if (nextTiles.some((tile) => !tile.number || !tile.title || !tile.timeframe)) {
+      el("roadmapMessage").textContent = "Fill in the number, title, and timeframe for each tile.";
+      return;
+    }
+
+    el("roadmapMessage").textContent = "Saving roadmap tiles…";
+    const result = await client.from("journey_settings").upsert({
+      id: "roadmap_tiles",
+      value: nextTiles,
+      updated_at: new Date().toISOString()
+    });
+    if (result.error) {
+      el("roadmapMessage").textContent = "Could not save roadmap tiles: " + result.error.message;
+      return;
+    }
+
+    roadmapTiles = nextTiles;
+    renderRoadmapTiles();
+    el("roadmapDialog").close();
+    showNotice("Roadmap tiles saved to the public dashboard.", false);
   });
 
   el("settingsButton").addEventListener("click", () => {
