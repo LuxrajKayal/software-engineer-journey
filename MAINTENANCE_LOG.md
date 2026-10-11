@@ -32,3 +32,9 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 - **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/4dedae2a81f2c777700ddac28dbfdcf2c33f0961)
 - **Files changed:**
   - 
+
+### 2026-10-11 — docs: explain website appearance settings
+
+- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/ff756b6f1d6223e2a84665779610846ab6a1e0b4)
+- **Files changed:**
+  - 
