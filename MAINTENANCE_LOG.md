@@ -9,6 +9,8 @@ This log tracks repository changes pushed to the `main` branch. The GitHub Actio
 - **Scope:** Repository changes pushed to GitHub. Changes saved directly to Supabase (such as live goal and schedule edits) are not Git commits and are not recorded here.
 - **Reason:** Keep a readable history of website and documentation maintenance.
 
+<!-- Tracking baseline: a72999a68ca320dcda3db86afa57dd91567933fd; older commits are intentionally not backfilled. -->
+
 ## Automated change history
 
 Future entries are appended by `.github/workflows/maintenance-log.yml` after pushes to `main`.
