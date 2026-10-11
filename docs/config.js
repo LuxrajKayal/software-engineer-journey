@@ -3,6 +3,6 @@
 // Use only a Supabase publishable/anon key here. Never put secrets or a service-role key here.
 // The owner's email is deliberately NOT stored in this public file.
 window.JOURNEY_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseUrl: "https://mfaxxwfqqsagzrmqvocc.supabase.co",
+  supabaseAnonKey: "sb_publishable_yTKB4ntOS4am9E5MQf42fA_zDoTicMH"
 };
