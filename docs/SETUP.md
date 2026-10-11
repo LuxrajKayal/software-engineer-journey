@@ -83,3 +83,8 @@ Visitors can read the current goals and schedule, but only the configured owner 
 - `owner-access-update.sql` — migration for a database created before the owner-access marker was added.
 
 This website is an evolving learning dashboard. The transparency note on the page explains the use of ChatGPT in generating the site and states that the author wrote the note himself.
+
+
+## Website appearance and social profiles
+
+After signing in as the owner, open **Settings** in the black header. Choose light or dark mode, select an accent colour, and optionally enter public profile URLs for GitHub, LinkedIn, Instagram, YouTube, and X. Only the profile links that are filled in appear as icons. These settings are saved in the `journey_settings` table under `site_preferences` and are shared with public visitors. The header stays black with white text in either theme.
