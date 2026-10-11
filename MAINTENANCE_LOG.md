@@ -17,24 +17,24 @@ Future entries are appended by `.github/workflows/maintenance-log.yml` after pus
 
 ### 2026-10-11 — feat: add owner settings dashboard and social links
 
-- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/c5660ee3e0714f1832a81ccd1b0dbe392c27050b)
+- **Commit:** [c5660ee](https://github.com/LuxrajKayal/software-engineer-journey/commit/c5660ee3e0714f1832a81ccd1b0dbe392c27050b)
 - **Files changed:**
-  - 
+  - docs/index.html
 
 ### 2026-10-11 — style: add black header and theme styles
 
-- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/8d2729493c644d8ddc1979881dfbc0883422120e)
+- **Commit:** [8d27294](https://github.com/LuxrajKayal/software-engineer-journey/commit/8d2729493c644d8ddc1979881dfbc0883422120e)
 - **Files changed:**
-  - 
+  - docs/styles.css
 
 ### 2026-10-11 — feat: save appearance and social profile settings
 
-- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/4dedae2a81f2c777700ddac28dbfdcf2c33f0961)
+- **Commit:** [4dedae2](https://github.com/LuxrajKayal/software-engineer-journey/commit/4dedae2a81f2c777700ddac28dbfdcf2c33f0961)
 - **Files changed:**
-  - 
+  - docs/app.js
 
 ### 2026-10-11 — docs: explain website appearance settings
 
-- **Commit:** [](https://github.com/LuxrajKayal/software-engineer-journey/commit/ff756b6f1d6223e2a84665779610846ab6a1e0b4)
+- **Commit:** [ff756b6](https://github.com/LuxrajKayal/software-engineer-journey/commit/ff756b6f1d6223e2a84665779610846ab6a1e0b4)
 - **Files changed:**
-  - 
+  - docs/SETUP.md
