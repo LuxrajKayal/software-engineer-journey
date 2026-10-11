@@ -24,8 +24,25 @@ create table if not exists public.journey_settings (
   updated_at timestamptz not null default now()
 );
 
+-- This marker is visible only to the owner. The email stays in the database policy,
+-- not in public JavaScript configuration.
+create table if not exists public.journey_owner_access (
+  id boolean primary key default true check (id is true),
+  can_edit boolean not null default true
+);
+
 alter table public.goals enable row level security;
 alter table public.journey_settings enable row level security;
+alter table public.journey_owner_access enable row level security;
+
+
+drop policy if exists "Only owner can read edit access marker" on public.journey_owner_access;
+create policy "Only owner can read edit access marker"
+on public.journey_owner_access for select to authenticated
+using (can_edit is true and lower(auth.jwt() ->> 'email') = lower('YOUR_OWNER_EMAIL_HERE'));
+
+revoke all on public.journey_owner_access from anon, authenticated;
+grant select on public.journey_owner_access to authenticated;
 
 drop policy if exists "Goals are visible to everyone" on public.goals;
 create policy "Goals are visible to everyone"
@@ -89,6 +106,10 @@ values
 ('10000000-0000-4000-8000-000000000010','Phase 5 — Backend','Build a database-backed Inventory API','Use one Python framework, validate requests, document endpoints, and persist data in a database.','Months 16–20','3 sessions each week; build incrementally',false,10),
 ('10000000-0000-4000-8000-000000000011','Phase 5 — Backend','Test the backend project','Add automated tests for normal cases and expected failures; document setup and configuration.','Months 18–20','One testing session each week',false,11),
 ('10000000-0000-4000-8000-000000000012','Phase 6 — Deployment','Deploy one portfolio project','Add automated checks, deploy the project, and write clear setup and troubleshooting instructions.','Months 21–24','One deployment/documentation session each week',false,12)
+on conflict (id) do nothing;
+
+insert into public.journey_owner_access (id, can_edit)
+values (true, true)
 on conflict (id) do nothing;
 
 insert into public.journey_settings (id, value)
