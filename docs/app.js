@@ -2,11 +2,10 @@
   "use strict";
 
   const config = window.JOURNEY_CONFIG || {};
-  const ownerEmail = String(config.ownerEmail || "").trim().toLowerCase();
+  // Only public browser settings belong here. Owner authorization is checked by database policies.
   const configured = Boolean(
     config.supabaseUrl &&
     config.supabaseAnonKey &&
-    ownerEmail &&
     window.supabase &&
     typeof window.supabase.createClient === "function"
   );
@@ -40,6 +39,7 @@
   const noticeBar = el("noticeBar");
   let client = null;
   let user = null;
+  let ownerAccess = false;
   let goals = demoGoals.map((goal) => Object.assign({}, goal));
   let schedule = Object.assign({}, defaultSchedule);
   let activeFilter = "all";
@@ -56,15 +56,34 @@
     noticeBar.dataset.persistent = persistent ? "true" : "false";
   }
 
+  // A private-to-owner row determines editor access; the database also protects every write.
   function isOwner() {
-    return Boolean(user && user.email && ownerEmail && user.email.toLowerCase() === ownerEmail);
+    return Boolean(user && ownerAccess);
+  }
+
+  async function refreshOwnerAccess() {
+    ownerAccess = false;
+    if (client && user) {
+      const result = await client.from("journey_owner_access")
+        .select("id")
+        .eq("id", true)
+        .maybeSingle();
+
+      if (result.error) {
+        showNotice("Owner access check failed. Run docs/owner-access-update.sql in Supabase and confirm its email placeholder was replaced. Details: " + result.error.message, true);
+      } else {
+        ownerAccess = Boolean(result.data && result.data.id === true);
+      }
+    }
+    renderAuth();
+    renderGoals();
   }
 
   function renderAuth() {
     const owner = isOwner();
     el("addGoalButton").hidden = !owner;
     el("editScheduleButton").hidden = !owner;
-    el("authButton").textContent = owner ? "Sign out" : (configured ? "Owner sign in" : "Setup needed");
+    el("authButton").textContent = owner || user ? "Sign out" : (configured ? "Owner sign in" : "Setup needed");
     el("modePill").textContent = owner ? "Owner editing enabled" : "Public · read only";
   }
 
@@ -160,8 +179,17 @@
 
       client.auth.onAuthStateChange((_event, session) => {
         user = session && session.user ? session.user : null;
+        ownerAccess = false;
         renderAuth();
         renderGoals();
+        window.setTimeout(() => {
+          refreshOwnerAccess().catch((error) => {
+            ownerAccess = false;
+            renderAuth();
+            renderGoals();
+            showNotice("Could not check owner access: " + error.message, true);
+          });
+        }, 0);
       });
 
       const goalResult = await client.from("goals").select("*").order("sort_order", { ascending: true });
@@ -172,13 +200,15 @@
       if (scheduleResult.error) throw scheduleResult.error;
       schedule = Object.assign({}, defaultSchedule, scheduleResult.data && scheduleResult.data.value ? scheduleResult.data.value : {});
 
+      await refreshOwnerAccess();
       renderAll();
       if (isOwner()) showNotice("Signed in as the owner. Your changes save to the public dashboard.", false);
+      else if (user) showNotice("Signed in, but this account has read-only access. Only the configured owner can edit goals and schedules.", false);
     } catch (error) {
       goals = demoGoals.map((goal) => Object.assign({}, goal));
       schedule = Object.assign({}, defaultSchedule);
       renderAll();
-      showNotice("The database could not be loaded. Confirm the Supabase project, SQL schema, owner email, and browser config. Details: " + (error.message || "unknown error"), true);
+      showNotice("The database could not be loaded. Confirm the Supabase project, SQL schema, and public browser config. Details: " + (error.message || "unknown error"), true);
     }
   }
 
@@ -225,9 +255,10 @@
       showNotice("Owner editing is not configured yet. Follow docs/SETUP.md to connect Supabase and enable GitHub Pages.", true);
       return;
     }
-    if (isOwner()) {
+    if (user) {
       const result = await client.auth.signOut();
       user = null;
+      ownerAccess = false;
       renderAll();
       if (result.error) showNotice("Could not sign out: " + result.error.message, true);
       else showNotice("Signed out. The dashboard is now in public read-only mode.", false);
@@ -242,10 +273,6 @@
     const entered = el("ownerEmailInput").value.trim().toLowerCase();
     if (!configured || !client) {
       el("loginMessage").textContent = "Site setup is not complete yet. Follow docs/SETUP.md.";
-      return;
-    }
-    if (entered !== ownerEmail) {
-      el("loginMessage").textContent = "Use the owner email configured for this website.";
       return;
     }
     el("loginMessage").textContent = "Sending secure sign-in link…";
