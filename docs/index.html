@@ -17,8 +17,10 @@
       <span class="brand-mark" aria-hidden="true">SJ</span>
       <span><strong>Software Engineer Journey</strong><small>Learn · Build · Document</small></span>
     </a>
+    <nav class="social-links" id="socialLinks" aria-label="Social media profiles" hidden></nav>
     <div class="header-actions">
       <span class="mode-pill" id="modePill">Public dashboard</span>
+      <button class="button button-outline button-small" id="settingsButton" type="button" hidden>Settings</button>
       <button class="button button-outline button-small" id="authButton" type="button">Owner sign in</button>
     </div>
   </header>
@@ -116,6 +118,47 @@
     <span>Built to document learning, not to pretend the journey is already complete.</span>
     <a href="https://github.com/LuxrajKayal/software-engineer-journey" target="_blank" rel="noreferrer">Source on GitHub ↗</a>
   </footer>
+
+
+  <dialog id="settingsDialog" class="dialog dialog-large">
+    <form id="settingsForm" class="dialog-form">
+      <div class="dialog-heading"><div><p class="eyebrow">OWNER SETTINGS</p><h2>Settings dashboard</h2></div><button class="icon-button" type="button" data-close="settingsDialog" aria-label="Close">×</button></div>
+      <p class="dialog-copy">Choose how the public dashboard looks and add links to your social profiles. Only links you fill in will appear as icons.</p>
+
+      <h3 class="settings-section-title">Website appearance</h3>
+      <div class="form-two-col">
+        <div>
+          <label for="siteTheme">Website mode</label>
+          <select id="siteTheme" name="theme">
+            <option value="light">Light mode</option>
+            <option value="dark">Dark mode</option>
+          </select>
+        </div>
+        <div>
+          <label for="accentColor">Accent colour</label>
+          <select id="accentColor" name="accentColor">
+            <option value="green">Forest green</option>
+            <option value="blue">Blue</option>
+            <option value="purple">Purple</option>
+            <option value="orange">Orange</option>
+          </select>
+        </div>
+      </div>
+      <p class="settings-help">The top bar remains black with white text. The mode and accent colour apply to the rest of the website.</p>
+
+      <h3 class="settings-section-title">Social profile links</h3>
+      <p class="settings-help">Paste the full public profile URL, including https://. Leave a field empty to hide that icon.</p>
+      <div class="social-settings-grid">
+        <div><label for="socialGitHub">GitHub</label><input id="socialGitHub" name="github" type="url" maxlength="300" placeholder="https://github.com/username"></div>
+        <div><label for="socialLinkedIn">LinkedIn</label><input id="socialLinkedIn" name="linkedin" type="url" maxlength="300" placeholder="https://www.linkedin.com/in/username"></div>
+        <div><label for="socialInstagram">Instagram</label><input id="socialInstagram" name="instagram" type="url" maxlength="300" placeholder="https://www.instagram.com/username/"></div>
+        <div><label for="socialYouTube">YouTube</label><input id="socialYouTube" name="youtube" type="url" maxlength="300" placeholder="https://www.youtube.com/@username"></div>
+        <div><label for="socialX">X</label><input id="socialX" name="x" type="url" maxlength="300" placeholder="https://x.com/username"></div>
+      </div>
+      <div class="dialog-actions"><span class="dialog-spacer"></span><button class="button button-outline" type="button" data-close="settingsDialog">Cancel</button><button class="button button-primary" type="submit">Save settings</button></div>
+      <p class="form-message" id="settingsMessage" role="status"></p>
+    </form>
+  </dialog>
 
   <dialog id="loginDialog" class="dialog">
     <form id="loginForm" class="dialog-form">
