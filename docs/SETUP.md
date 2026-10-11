@@ -90,3 +90,8 @@ This website is an evolving learning dashboard. The transparency note on the pag
 After signing in as the owner, open **Settings** in the black header. Choose light or dark mode, select an accent colour, and optionally enter public profile URLs for GitHub, LinkedIn, Instagram, YouTube, and X. Only the profile links that are filled in appear as icons. These settings are saved in the `journey_settings` table under `site_preferences` and are shared with public visitors. The header stays black with white text in either theme.
 
 The maintenance workflow also runs `node --check docs/app.js` to catch JavaScript syntax errors before it appends repository changes to the log.
+
+
+## Editing the roadmap tiles
+
+After signing in as the owner, choose the pencil icon in the **Roadmap phases** panel. You can edit the number, title, and timeframe on each of the six displayed tiles. Save to publish the changes to the dashboard. The tile settings are stored in the existing `journey_settings` table under `roadmap_tiles`; this changes the dashboard tiles only and does not edit the detailed `ROADMAP.md` document.
