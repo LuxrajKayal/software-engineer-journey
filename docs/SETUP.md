@@ -6,16 +6,20 @@ The site files are in the `docs` folder. GitHub Pages serves the public website;
 
 Create a project in your Supabase account and keep the project dashboard private to you. Wait until the database is ready.
 
-## 2. Set the owner email and create the database
+## 2. Database setup and owner-only editing
+
+If creating the database from scratch:
 
 1. Open the project's SQL Editor.
 2. Open `docs/supabase-schema.sql` in this repository.
-3. Replace every instance of `YOUR_OWNER_EMAIL_HERE` with the exact email address you will use to sign in to the website.
+3. Replace every `YOUR_OWNER_EMAIL_HERE` placeholder with the exact email address you will use to sign in.
 4. Run the full SQL script.
 
-This creates the goals and study-schedule tables, adds public read access, restricts write policies to the owner email, and inserts starter goals. Running the script again will not overwrite existing goal edits.
+If you already ran the original schema before the owner-marker update, open `docs/owner-access-update.sql`, replace its one `YOUR_OWNER_EMAIL_HERE` placeholder with the same owner email used in your existing write policies, and run that migration.
 
-**Important:** Do not remove or loosen the row-level security (RLS) policies. The website's visual checks are helpful for the user experience, but these database policies are what enforce owner-only writes.
+The private `journey_owner_access` table lets the website determine whether a signed-in user is the owner without publishing the email in JavaScript. Row Level Security (RLS) on this table hides the marker from everyone except the owner. The goals and schedule tables have their own RLS write policies.
+
+**Important:** Do not remove or loosen the RLS policies. The browser interface is not a security boundary; database policies enforce owner-only writes.
 
 ## 3. Configure email sign-in redirects
 
@@ -25,7 +29,7 @@ In Supabase Authentication URL configuration:
 - Add that same URL to the allowed Redirect URLs.
 - Make sure the Email provider is enabled.
 
-The magic link will be sent to the owner's inbox. Use the exact same email in the SQL policy and the browser configuration in the next step.
+The magic link will be sent to the owner's inbox. Use the same email as the one configured in the Supabase database policies. It is intentionally not stored in the public browser configuration.
 
 ## 4. Add the browser configuration
 
@@ -33,7 +37,7 @@ Open `docs/config.js` in the repository and fill in these fields:
 
 - `supabaseUrl`: your Supabase project URL.
 - `supabaseAnonKey`: the browser-safe publishable key (or legacy anon key) from your Supabase project.
-- `ownerEmail`: the exact owner email configured in the SQL policy.
+The file intentionally has no `ownerEmail` field. Only the URL and publishable/anon key belong in this public configuration.
 
 Only use the public publishable/anon key here. **Never put a service-role key, database password, or other secret in this file.** The browser config is visible to anyone who can view the website, so database security must come from the RLS policies.
 
@@ -76,5 +80,6 @@ Visitors can read the current goals and schedule, but only the configured owner 
 - `app.js` — display, filters, editing, and owner sign-in behavior.
 - `config.js` — public Supabase browser configuration.
 - `supabase-schema.sql` — database tables, access policies, and starter content.
+- `owner-access-update.sql` — migration for a database created before the owner-access marker was added.
 
 This website is an evolving learning dashboard. The transparency note on the page explains the use of ChatGPT in generating the site and states that the author wrote the note himself.
