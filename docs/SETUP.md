@@ -88,3 +88,5 @@ This website is an evolving learning dashboard. The transparency note on the pag
 ## Website appearance and social profiles
 
 After signing in as the owner, open **Settings** in the black header. Choose light or dark mode, select an accent colour, and optionally enter public profile URLs for GitHub, LinkedIn, Instagram, YouTube, and X. Only the profile links that are filled in appear as icons. These settings are saved in the `journey_settings` table under `site_preferences` and are shared with public visitors. The header stays black with white text in either theme.
+
+The maintenance workflow also runs `node --check docs/app.js` to catch JavaScript syntax errors before it appends repository changes to the log.
