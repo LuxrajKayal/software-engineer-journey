@@ -28,6 +28,9 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Validate dashboard JavaScript syntax
+        run: node --check docs/app.js
+
       - name: Append unlogged repository changes
         env:
           BASELINE_SHA: a72999a68ca320dcda3db86afa57dd91567933fd
